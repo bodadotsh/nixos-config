@@ -28,6 +28,16 @@ let name = "boda";
       gm = "git switch main";
       gs = "git status";
     };
+    # mise (https://mise.jdx.dev) is installed via Homebrew (see
+    # modules/darwin/home-manager.nix `homebrew.brews`) rather than nixpkgs:
+    # nixpkgs' `mise` is built from source via rustPlatform.buildRustPackage
+    # (incl. its test suite), and aarch64-darwin builds are frequently
+    # missing from cache.nixos.org, forcing a slow local Rust compile on
+    # every nixpkgs bump. Homebrew ships a prebuilt bottle for Apple
+    # Silicon, so we only wire up shell activation here.
+    interactiveShellInit = ''
+      mise activate fish | source
+    '';
   };
 
   # Managed by home-manager so it picks up `home.sessionPath` etc. below
@@ -35,6 +45,9 @@ let name = "boda";
   # the login shell in modules/darwin/home-manager.nix).
   zsh = {
     enable = true;
+    initContent = ''
+      eval "$(mise activate zsh)"
+    '';
   };
 
   starship = {

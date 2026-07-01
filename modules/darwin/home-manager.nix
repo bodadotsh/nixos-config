@@ -25,6 +25,10 @@ in
   homebrew = {
     enable = true;
     casks = pkgs.callPackage ./casks.nix {};
+    # Prebuilt bottle avoids the slow from-source Rust build nixpkgs'
+    # `mise` derivation requires when aarch64-darwin isn't yet cached
+    # upstream (see modules/shared/home-manager.nix for shell activation).
+    brews = [ "mise" ];
     # onActivation.cleanup = "uninstall";
 
     # These app IDs are from using the mas CLI app
