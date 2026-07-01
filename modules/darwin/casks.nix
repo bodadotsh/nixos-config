@@ -6,5 +6,6 @@ _:
   "firefox@developer-edition"
   "ghostty"
   "google-chrome@dev"
+  "mullvad-vpn"
   "raycast"
 ]
