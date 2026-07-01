@@ -2,6 +2,7 @@
 
 with pkgs; [
   bat
+  codex
   curl
   fd
   fish
