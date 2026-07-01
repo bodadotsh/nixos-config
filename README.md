@@ -85,35 +85,32 @@ nix-store --gc --print-dead
 
 Home Manager and nix-darwin keep their own generation history; `darwin-rebuild --list-generations` shows system-level generations.
 
-## Flake apps
+## Pragmatic Nix
 
-| App | Command | Description |
-|-----|---------|-------------|
-| `apply` | `nix run .#apply` | First-time personalization of user placeholders |
-| `build` | `nix run .#build` | Build system without switching |
-| `build-switch` | `nix run .#build-switch` | Build and activate a new generation |
-| `rollback` | `nix run .#rollback` | Interactive rollback to a prior generation |
-| `clean` | `nix run .#clean` | Garbage-collect generations older than 7 days |
+Although declarative nix is great, there are few things that are not managed through nix:
 
-## Layout
-
-```
-.
-├── apps/aarch64-darwin/   # Shell scripts invoked by flake apps
-├── flake.nix              # Inputs, outputs, and app definitions
-├── flake.lock             # Pinned input revisions
-├── hosts/darwin/          # Machine-specific nix-darwin configuration
-├── modules/
-│   ├── darwin/            # macOS-only modules (dock, casks, etc.)
-│   └── shared/            # Config shared across platforms
-└── overlays/              # nixpkgs overlays applied on every build
-```
-
-See also the READMEs in `modules/shared/`, `modules/darwin/`, and `overlays/` for module-level detail.
-
-## Extras
-
-There are few things are not managed through nix:
-
+- cursor `agent` cli 
 - GitHub Desktop
-- cursor `agent` cli
+- mise global config (e.g., output of `mise use --global`)
+- AstroNvim's plugins and LSPs/formatters/DAPs (managed by `lazy.nvim`/`mason.nvim` at runtime — see "Neovim (AstroNvim)" below)
+
+## Neovim (AstroNvim)
+
+[AstroNvim](https://docs.astronvim.com/) is installed as a set of dotfiles rather than a Nix package, since it's fundamentally a Lua config that expects to manage its own plugins. Nix and AstroNvim's own tooling split responsibilities:
+
+- **Nix-managed:**
+  - The config itself lives in [modules/shared/config/nvim/](modules/shared/config/nvim/) (a checked-in copy of the [AstroNvim template](https://github.com/AstroNvim/template)) and is symlinked to `~/.config/nvim` by home-manager via [modules/shared/files.nix](modules/shared/files.nix).
+  - `neovim` plus AstroNvim's CLI dependencies (`ripgrep`, `lazygit`, `fd`, `git`) live in [modules/shared/packages.nix](modules/shared/packages.nix).
+  - The Nerd Font (`font-jetbrains-mono-nerd-font`, used for file icons/statusline) is a Homebrew cask in [modules/darwin/casks.nix](modules/darwin/casks.nix), wired into Ghostty's `font-family` in [modules/darwin/home-manager.nix](modules/darwin/home-manager.nix).
+  - Node is **not** added as a nix package — it's already provided by `mise` (see `mise activate` in [modules/shared/home-manager.nix](modules/shared/home-manager.nix)) and picked up on `PATH` by Mason/AstroNvim like any other shell tool.
+- **Left to AstroNvim's own tooling (pragmatic, not nix-managed):**
+  - `lazy.nvim` installs AstroNvim core and all plugins by cloning them from git on first launch, and `mason.nvim` installs LSPs/formatters/DAPs on demand (`:LspInstall`, `:MasonInstall`). Reimplementing this in Nix (e.g. via `lazy-nix-helper.nvim`) was considered and skipped as unnecessary overhead for this setup.
+  - Because `~/.config/nvim` is a read-only symlink into the nix store, `lazy.nvim`'s lockfile is redirected to the (writable, non-nix-managed) state dir in `lua/lazy_setup.lua` (`vim.fn.stdpath("state") .. "/lazy-lock.json"`) instead of its usual home inside the config directory.
+
+To pin plugin versions across machines (the non-Nix equivalent of `flake.lock`), copy the generated lockfile into the repo and commit it:
+
+```sh
+cp ~/.local/state/nvim/lazy-lock.json modules/shared/config/nvim/lazy-lock.json
+```
+
+To change the config itself, edit files under `modules/shared/config/nvim/` (not the symlinked `~/.config/nvim` path directly) and run `nix run .#build-switch`.
