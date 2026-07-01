@@ -19,4 +19,13 @@ let name = "boda";
       rebase.autoStash = true;
     };
   };
+
+  fish = {
+    enable = true;
+  };
+
+  starship = {
+    enable = true;
+    enableFishIntegration = true;
+  };
 }

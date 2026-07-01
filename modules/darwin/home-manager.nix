@@ -15,6 +15,13 @@ in
     shell = pkgs.zsh;
   };
 
+  # System-level (nix-darwin) fish integration: generates /etc/fish/config.fish
+  # to source the nix environment (PATH, NIX_PROFILES, etc.), the same way
+  # /etc/zshenv already does for zsh. Without this, any fish process not
+  # spawned through a login shell that runs path_helper (e.g. Ghostty's
+  # `command = fish`) won't see nix/home-manager-installed packages on PATH.
+  programs.fish.enable = true;
+
   homebrew = {
     enable = true;
     casks = pkgs.callPackage ./casks.nix {};
@@ -38,6 +45,9 @@ in
   # Enable home-manager
   home-manager = {
     useGlobalPkgs = true;
+    # Back up (rather than fail on) pre-existing plain files that collide with
+    # files home-manager wants to manage, e.g. fish's own default config.fish.
+    backupFileExtension = "backup";
     users.${user} = { pkgs, config, lib, ... }:{
       home = {
         enableNixpkgsReleaseCheck = false;
@@ -45,6 +55,12 @@ in
         stateVersion = "23.11";
       };
       programs = {} // import ../shared/home-manager.nix { inherit config pkgs lib; };
+
+      # Ghostty defaults to the login shell ($SHELL), which stays zsh above.
+      # Override just Ghostty's shell to fish without touching the system login shell.
+      xdg.configFile."ghostty/config".text = ''
+        command = ${pkgs.fish}/bin/fish --login --interactive
+      '';
 
       # Marked broken Oct 20, 2022 check later to remove this
       # https://github.com/nix-community/home-manager/issues/3344
