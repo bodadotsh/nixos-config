@@ -11,7 +11,6 @@ with pkgs; [
   htop
   jq
   lazygit 
-  mise
   neovim
   ripgrep
   tmux
