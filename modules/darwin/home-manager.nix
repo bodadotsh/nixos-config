@@ -12,7 +12,6 @@ let
 in
 {
   imports = [
-   ./dock
   ];
 
   # It me
@@ -50,11 +49,6 @@ in
       home = {
         enableNixpkgsReleaseCheck = false;
         packages = pkgs.callPackage ./packages.nix {};
-        file = lib.mkMerge [
-          sharedFiles
-          additionalFiles
-          { "emacs-launcher.command".source = myEmacsLauncher; }
-        ];
         stateVersion = "23.11";
       };
       programs = {} // import ../shared/home-manager.nix { inherit config pkgs lib; };
@@ -63,31 +57,6 @@ in
       # https://github.com/nix-community/home-manager/issues/3344
       manual.manpages.enable = false;
     };
-  };
-
-  # Fully declarative dock using the latest from Nix Store
-  local.dock = {
-    enable = true;
-    username = user;
-    entries = [
-      { path = "/Applications/Safari.app/"; }
-      { path = "/System/Applications/Messages.app/"; }
-      { path = "/System/Applications/Notes.app/"; }
-      { path = "${pkgs.alacritty}/Applications/Alacritty.app/"; }
-      { path = "/System/Applications/Music.app/"; }
-      { path = "/System/Applications/Photos.app/"; }
-      { path = "/System/Applications/Photo Booth.app/"; }
-      { path = "/System/Applications/System Settings.app/"; }
-      {
-        path = toString myEmacsLauncher;
-        section = "others";
-      }
-      {
-        path = "${config.users.users.${user}.home}/Downloads";
-        section = "others";
-        options = "--sort name --view grid --display stack";
-      }
-    ];
   };
 
 }
