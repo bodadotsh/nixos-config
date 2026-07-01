@@ -65,11 +65,14 @@ in
       };
       programs = {} // import ../shared/home-manager.nix { inherit config pkgs lib; };
 
-      # Ghostty defaults to the login shell ($SHELL), which stays zsh above.
-      # Override just Ghostty's shell to fish without touching the system login shell.
-      xdg.configFile."ghostty/config".text = ''
-        command = ${pkgs.fish}/bin/fish --login --interactive
-      '';
+      xdg.configFile = (import ../shared/files.nix { inherit config pkgs; }) // {
+        # Ghostty defaults to the login shell ($SHELL), which stays zsh above.
+        # Override just Ghostty's shell to fish without touching the system login shell.
+        "ghostty/config".text = ''
+          command = ${pkgs.fish}/bin/fish --login --interactive
+          font-family = "JetBrainsMono Nerd Font"
+        '';
+      };
 
       # Marked broken Oct 20, 2022 check later to remove this
       # https://github.com/nix-community/home-manager/issues/3344

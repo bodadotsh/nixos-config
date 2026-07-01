@@ -2,11 +2,13 @@
 
 with pkgs; [
   bat
+  bottom
   codex
   curl
   fd
   fish
   fzf
+  gdu
   gh
   git
   htop
