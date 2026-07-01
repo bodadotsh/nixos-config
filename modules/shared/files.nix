@@ -11,4 +11,8 @@
   # lockfile is redirected elsewhere in lua/lazy_setup.lua since it needs to
   # write to it (see comment there).
   "nvim".source = ./config/nvim;
+
+  # Overrides zellij's default_shell (which otherwise inherits $SHELL, i.e.
+  # zsh, the account's login shell) so panes/tabs open in fish instead.
+  "zellij/config.kdl".source = ./config/zellij/config.kdl;
 }
