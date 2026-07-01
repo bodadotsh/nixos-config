@@ -1,0 +1,35 @@
+---
+description: How to build/activate this nix-darwin config
+alwaysApply: true
+---
+
+# Applying config changes
+
+To activate changes made under `hosts/`, `modules/`, or `overlays/`, always use:
+
+```zsh
+nix run .#build-switch
+```
+
+Do **NOT** tell the user to run `darwin-rebuild switch --flake .` (with or
+without `sudo`) directly. The `build-switch` app (see
+`apps/aarch64-darwin/build-switch`) is not just a thin alias — it:
+
+- Exports `NIXPKGS_ALLOW_UNFREE=1`, which this config's unfree
+  packages/casks need to build.
+- Builds the closure first as the normal user (`nix build`), then only uses
+  `sudo` to activate via `./result/sw/bin/darwin-rebuild` — invoking
+  `darwin-rebuild` from the just-built result rather than whatever is on
+  `PATH`/`/run/current-system`, working around
+  [nix-darwin#1457](https://github.com/nix-darwin/nix-darwin/issues/1457).
+- Cleans up the `./result` symlink afterward.
+
+Other equivalent flake apps, also documented in `README.md`:
+
+- `nix run .#build` — build only, no activation (validate changes).
+- `nix run .#rollback` — interactive rollback to a prior generation.
+- `nix run .#clean` — garbage-collect generations older than 7 days.
+
+Only reach for raw `darwin-rebuild` commands for things `build-switch`
+doesn't cover, e.g. `darwin-rebuild --list-generations` or switching to an
+explicit generation number.

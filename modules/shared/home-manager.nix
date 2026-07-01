@@ -30,6 +30,13 @@ let name = "boda";
     };
   };
 
+  # Managed by home-manager so it picks up `home.sessionPath` etc. below
+  # (mirrors the fish integration above; nix-darwin already sets zsh as
+  # the login shell in modules/darwin/home-manager.nix).
+  zsh = {
+    enable = true;
+  };
+
   starship = {
     enable = true;
     enableFishIntegration = true;

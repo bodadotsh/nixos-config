@@ -110,3 +110,10 @@ Home Manager and nix-darwin keep their own generation history; `darwin-rebuild -
 ```
 
 See also the READMEs in `modules/shared/`, `modules/darwin/`, and `overlays/` for module-level detail.
+
+## Extras
+
+There are few things are not managed through nix:
+
+- GitHub Desktop
+- cursor `agent` cli

@@ -53,6 +53,10 @@ in
       home = {
         enableNixpkgsReleaseCheck = false;
         packages = pkgs.callPackage ./packages.nix {};
+        # Equivalent of appending `export PATH=...`/`fish_add_path` to the
+        # respective rc files; home-manager renders this into both
+        # ~/.zshrc (via programs.zsh.enable) and fish's conf.d.
+        sessionPath = [ "$HOME/.local/bin" ];
         stateVersion = "23.11";
       };
       programs = {} // import ../shared/home-manager.nix { inherit config pkgs lib; };
