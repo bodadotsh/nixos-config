@@ -10,16 +10,6 @@ let name = "boda";
     lfs = {
       enable = true;
     };
-    # Keyless commit/tag signing via sigstore's gitsign: no GPG key to
-    # generate or back up, identity is proven via an OIDC login (GitHub)
-    # instead. First sign of each session pops a browser window; note
-    # GitHub doesn't render these as "Verified" since it doesn't yet trust
-    # sigstore's CA (see https://github.com/sigstore/gitsign#readme).
-    signing = {
-      format = "x509";
-      signByDefault = true;
-      signer = "${pkgs.gitsign}/bin/gitsign";
-    };
     settings = {
       user.name = name;
       user.email = email;
@@ -27,9 +17,6 @@ let name = "boda";
       core.autocrlf = "input";
       pull.rebase = true;
       rebase.autoStash = true;
-      # Pre-select the GitHub OIDC flow so the browser auth redirects
-      # straight to GitHub instead of showing a provider picker.
-      gitsign.connectorID = "https://github.com/login/oauth";
     };
   };
 
