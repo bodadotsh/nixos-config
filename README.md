@@ -66,6 +66,7 @@ Although declarative nix is great, there are few things that are not managed thr
 - GitHub Desktop
 - mise global config (e.g., output of `mise use --global`)
 - AstroNvim's plugins (see "Neovim (AstroNvim)" below)
+- Enabling the 1Password SSH Agent (Settings > Developer > "Use the SSH Agent" in the 1Password app), required once per machine for SSH-based git commit signing (see [modules/shared/home-manager.nix](modules/shared/home-manager.nix))
 
 ## Neovim (AstroNvim)
 
