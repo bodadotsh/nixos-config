@@ -18,6 +18,7 @@ with pkgs; [
   ripgrep
   tmux
   tree
+  vim
   wget
   zellij
 ]

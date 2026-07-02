@@ -15,6 +15,10 @@ let name = "boda";
       user.email = email;
       init.defaultBranch = "main";
       core.autocrlf = "input";
+      # Explicit store path (rather than relying on macOS's bundled
+      # /usr/bin/vim, which isn't version-pinned) so commit messages open
+      # in the nix-managed vim from modules/shared/packages.nix.
+      core.editor = "${pkgs.vim}/bin/vim";
       pull.rebase = true;
       rebase.autoStash = true;
     };
