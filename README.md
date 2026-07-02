@@ -32,13 +32,7 @@ Flake inputs (`nixpkgs`, `darwin`, `home-manager`, Homebrew taps, etc.) are pinn
 nix flake update
 ```
 
-After updating, rebuild and switch:
-
-```sh
-nix run .#build-switch
-```
-
-Review `flake.lock` changes before committing if you track this repo in git.
+After updating, rebuild and switch. Review `flake.lock` changes before committing if you track this repo in git.
 
 ## Rollback
 
