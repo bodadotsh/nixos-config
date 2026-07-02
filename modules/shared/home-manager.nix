@@ -39,6 +39,7 @@ let name = "boda";
       ga = "git add .";
       gf = "git fetch && git pull";
       gm = "git switch main";
+      gp = "git push";
       gs = "git status";
     };
     # mise (https://mise.jdx.dev) is installed via Homebrew (see
