@@ -30,11 +30,6 @@ Flake inputs (`nixpkgs`, `darwin`, `home-manager`, Homebrew taps, etc.) are pinn
 ```sh
 # Update all inputs
 nix flake update
-
-# Update a single input
-nix flake update nixpkgs
-nix flake update darwin
-nix flake update home-manager
 ```
 
 After updating, rebuild and switch:
@@ -50,7 +45,7 @@ Review `flake.lock` changes before committing if you track this repo in git.
 List available system generations:
 
 ```sh
-darwin-rebuild --list-generations
+sudo darwin-rebuild --list-generations
 ```
 
 Roll back interactively (prompts for a generation number):
@@ -59,28 +54,12 @@ Roll back interactively (prompts for a generation number):
 nix run .#rollback
 ```
 
-Or switch to a specific generation directly:
-
-```sh
-sudo darwin-rebuild switch --flake .#aarch64-darwin --switch-generation <N>
-```
-
 ## Cleanup
 
 Remove system generations older than 7 days and collect unreachable store paths:
 
 ```sh
 nix run .#clean
-```
-
-Additional manual cleanup:
-
-```sh
-# Remove all generations except the current one
-sudo nix-collect-garbage -d
-
-# See what would be deleted first
-nix-store --gc --print-dead
 ```
 
 Home Manager and nix-darwin keep their own generation history; `darwin-rebuild --list-generations` shows system-level generations.
