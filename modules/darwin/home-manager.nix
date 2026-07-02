@@ -63,7 +63,15 @@ in
         sessionPath = [ "$HOME/.local/bin" ];
         stateVersion = "26.05";
       };
-      programs = {} // import ../shared/home-manager.nix { inherit config pkgs lib; };
+      programs = {
+        # Fish's generateCompletions (on by default) sets this to true via
+        # mkDefault so `apropos`-based completions can be indexed. But since
+        # stateVersion 26.05, programs.man.package defaults to null on
+        # Darwin (nixpkgs' GNU man-db breaks apropos/whatis on macOS), which
+        # makes generateCaches a no-op and prints a warning. Explicitly
+        # disable it rather than installing the broken package.
+        man.generateCaches = false;
+      } // import ../shared/home-manager.nix { inherit config pkgs lib; };
 
       xdg.configFile = (import ../shared/files.nix { inherit config pkgs; }) // {
         # Ghostty defaults to the login shell ($SHELL), which stays zsh above.
