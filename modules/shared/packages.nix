@@ -11,6 +11,7 @@ with pkgs; [
   gdu
   gh
   git
+  gitsign
   htop
   jq
   lazygit 
