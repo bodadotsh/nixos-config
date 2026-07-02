@@ -15,6 +15,7 @@ with pkgs; [
   jq
   lazygit 
   neovim
+  oxfmt
   ripgrep
   tmux
   tree

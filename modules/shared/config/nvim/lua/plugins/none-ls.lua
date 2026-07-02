@@ -1,13 +1,26 @@
-if true then return {} end -- WARN: REMOVE THIS LINE TO ACTIVATE THIS FILE
-
 -- Customize None-ls sources
 
 ---@type LazySpec
 return {
   "nvimtools/none-ls.nvim",
   opts = function(_, opts)
-    -- opts variable is the default configuration table for the setup function call
-    -- local null_ls = require "null-ls"
+    local h = require "null-ls.helpers"
+
+    -- oxfmt (https://oxc.rs, nix package "oxfmt") doesn't have a none-ls
+    -- builtin yet, so it's defined here the same way none-ls defines its
+    -- own builtins. AstroNvim formats on save by default;
+    -- Scoped to markdown only for now.
+    local oxfmt = h.make_builtin {
+      name = "oxfmt",
+      method = require("null-ls.methods").internal.FORMATTING,
+      filetypes = { "markdown" },
+      generator_opts = {
+        command = "oxfmt",
+        args = { "-c", vim.fn.stdpath "config" .. "/.oxfmtrc.json", "--stdin-filepath", "$FILENAME" },
+        to_stdin = true,
+      },
+      factory = h.formatter_factory,
+    }
 
     -- Check supported formatters and linters
     -- https://github.com/nvimtools/none-ls.nvim/tree/main/lua/null-ls/builtins/formatting
@@ -15,10 +28,6 @@ return {
 
     -- Only insert new sources, do not replace the existing ones
     -- (If you wish to replace, use `opts.sources = {}` instead of the `list_insert_unique` function)
-    opts.sources = require("astrocore").list_insert_unique(opts.sources, {
-      -- Set a formatter
-      -- null_ls.builtins.formatting.stylua,
-      -- null_ls.builtins.formatting.prettier,
-    })
+    opts.sources = require("astrocore").list_insert_unique(opts.sources, { oxfmt })
   end,
 }
