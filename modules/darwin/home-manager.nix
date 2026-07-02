@@ -61,7 +61,7 @@ in
         # respective rc files; home-manager renders this into both
         # ~/.zshrc (via programs.zsh.enable) and fish's conf.d.
         sessionPath = [ "$HOME/.local/bin" ];
-        stateVersion = "23.11";
+        stateVersion = "26.05";
       };
       programs = {} // import ../shared/home-manager.nix { inherit config pkgs lib; };
 
