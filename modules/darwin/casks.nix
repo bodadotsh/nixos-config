@@ -10,4 +10,5 @@ _:
   "mochi"
   "mullvad-vpn"
   "raycast"
+  "tuta-mail"
 ]
