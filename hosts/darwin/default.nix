@@ -42,11 +42,6 @@ let user = "mini"; in
       finder = {
         _FXShowPosixPathInTitle = false;
       };
-
-      trackpad = {
-        Clicking = true;
-        TrackpadThreeFingerDrag = true;
-      };
     };
   };
 }
