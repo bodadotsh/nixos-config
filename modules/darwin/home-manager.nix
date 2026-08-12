@@ -29,6 +29,11 @@ in
     # `mise` derivation requires when aarch64-darwin isn't yet cached
     # upstream (see modules/shared/home-manager.nix for shell activation).
     brews = [ "mise" ];
+    # Upgrade formulae/casks to versions from the nix-homebrew-pinned
+    # taps during activation. Leave autoUpdate off so taps stay
+    # flake-locked; leave greedyCasks off so auto-updating apps
+    # (Firefox, Chrome, etc.) aren't force-replaced by brew.
+    onActivation.upgrade = true;
     # onActivation.cleanup = "uninstall";
 
     # These app IDs are from using the mas CLI app
